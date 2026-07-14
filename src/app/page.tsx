@@ -1,5 +1,10 @@
-import { HomePage } from "@/features/home/home-page";
+import { DashboardLayout } from "@/features/dashboard/components/dashboard-layout";
 
-export default function Home() {
-  return <HomePage />;
+export default function HomePage() {
+  return (
+    <DashboardLayout
+      title="Dashboard"
+      description="A premium dashboard shell with demo/sample data for future portfolio and market insights."
+    />
+  );
 }
