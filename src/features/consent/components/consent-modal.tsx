@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { consentText, CONSENT_VERSION } from "@/features/consent/data/consent";
-import { hasValidConsent, readConsentState, writeConsentState } from "@/features/consent/lib/storage";
+import { writeConsentState } from "@/features/consent/lib/storage";
 
 interface ConsentModalProps {
   onAccept: () => void;
@@ -11,19 +11,6 @@ interface ConsentModalProps {
 
 export function ConsentModal({ onAccept }: ConsentModalProps) {
   const [accepted, setAccepted] = useState(false);
-
-  const isOpen = useMemo(() => {
-    if (typeof window === "undefined") {
-      return true;
-    }
-
-    const stored = readConsentState();
-    return !hasValidConsent(stored, CONSENT_VERSION);
-  }, []);
-
-  if (!isOpen) {
-    return null;
-  }
 
   const handleContinue = () => {
     writeConsentState({ isAccepted: true, version: CONSENT_VERSION });
