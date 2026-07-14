@@ -9,6 +9,7 @@ import { PageHeader } from "@/features/dashboard/components/page-header";
 import { PanelCard } from "@/features/dashboard/components/panel-card";
 import { StatCard } from "@/features/dashboard/components/stat-card";
 import { demoMetrics, demoSections } from "@/features/dashboard/data/demo-content";
+import { AIDisclaimer } from "@/features/consent/components/ai-disclaimer";
 
 interface DashboardLayoutProps {
   title: string;
@@ -119,6 +120,7 @@ export function DashboardLayout({ title, description, children }: DashboardLayou
             </div>
 
             {children}
+            <AIDisclaimer />
           </div>
         </div>
       </div>
