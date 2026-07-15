@@ -6,7 +6,7 @@ interface PageHeaderProps {
 export function PageHeader({ title, description }: PageHeaderProps) {
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-sm font-medium uppercase tracking-[0.24em] text-zinc-500">
+      <p className="text-sm font-medium uppercase text-zinc-500">
         Demo / sample data
       </p>
       <h1 className="text-2xl font-semibold tracking-tight text-zinc-100 sm:text-3xl">

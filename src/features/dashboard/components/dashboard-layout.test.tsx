@@ -1,94 +1,32 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { DashboardLayout } from "./dashboard-layout";
 import { DashboardLayoutContent } from "./dashboard-layout-content";
 
-const signOut = vi.fn();
-const replace = vi.fn();
-const refresh = vi.fn();
 let currentPathname = "/";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => currentPathname,
-  useRouter: () => ({ replace, refresh }),
-}));
-
-const getUser = vi.fn();
-
-vi.mock("@/features/auth/lib/auth", () => ({
-  createSupabaseServerClient: vi.fn(async () => ({
-    auth: {
-      getUser,
-    },
-  })),
-}));
-
-vi.mock("@supabase/ssr", () => ({
-  createBrowserClient: () => ({
-    auth: {
-      signOut,
-    },
-  }),
 }));
 
 describe("DashboardLayoutContent", () => {
   beforeEach(() => {
     currentPathname = "/";
-    signOut.mockReset();
-    replace.mockReset();
-    refresh.mockReset();
-    getUser.mockReset();
-    signOut.mockResolvedValue({ error: null });
   });
 
-  it("passes the authenticated user email from the server-side auth lookup", async () => {
-    getUser.mockResolvedValue({ data: { user: { email: "server@example.com" } }, error: null });
-
-    const component = await DashboardLayout({ title: "Dashboard", description: "Demo shell" });
-    render(component);
-
-    expect(screen.getByText("server@example.com")).toBeTruthy();
-  });
-
-  it("renders the title, demo data label, and the signed-in user email", () => {
+  it("renders the title, demo labels, market strip, and page content without auth UI", () => {
     render(
-      <DashboardLayoutContent title="Dashboard" description="Demo shell" userEmail="investor@example.com">
+      <DashboardLayoutContent title="Dashboard" description="Demo shell">
         <div>Body content</div>
       </DashboardLayoutContent>,
     );
 
     expect(screen.getByRole("heading", { level: 1, name: "Dashboard" })).toBeTruthy();
     expect(screen.getByText("Demo / sample data")).toBeTruthy();
-    expect(screen.getByText("investor@example.com")).toBeTruthy();
-  });
-
-  it("signs the user out and clears the session state", async () => {
-    render(
-      <DashboardLayoutContent title="Dashboard" description="Demo shell" userEmail="investor@example.com">
-        <div>Body content</div>
-      </DashboardLayoutContent>,
-    );
-
-    fireEvent.click(screen.getByRole("button", { name: /sign out/i }));
-
-    await waitFor(() => {
-      expect(signOut).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  it("redirects to sign-in after a successful sign-out", async () => {
-    render(
-      <DashboardLayoutContent title="Dashboard" description="Demo shell" userEmail="investor@example.com">
-        <div>Body content</div>
-      </DashboardLayoutContent>,
-    );
-
-    fireEvent.click(screen.getByRole("button", { name: /sign out/i }));
-
-    await waitFor(() => {
-      expect(replace).toHaveBeenCalledWith("/sign-in");
-      expect(refresh).toHaveBeenCalled();
-    });
+    expect(screen.getByText("Top market strip - sample data")).toBeTruthy();
+    expect(screen.getByText("Sample data only. No authentication, APIs, or charts are connected.")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /sign out/i })).toBeNull();
+    expect(screen.getByText("Body content")).toBeTruthy();
   });
 
   it.each([
@@ -104,7 +42,7 @@ describe("DashboardLayoutContent", () => {
     currentPathname = pathname;
 
     const { container } = render(
-      <DashboardLayoutContent title="Dashboard" description="Demo shell" userEmail="investor@example.com">
+      <DashboardLayoutContent title="Dashboard" description="Demo shell">
         <div>Body content</div>
       </DashboardLayoutContent>,
     );
@@ -112,5 +50,40 @@ describe("DashboardLayoutContent", () => {
     const link = container.querySelector(`a[href="${pathname === "/dashboard" ? "/" : pathname}"]`);
     expect(link?.getAttribute("aria-current")).toBe("page");
     expect(link?.textContent).toContain(expectedLabel);
+  });
+
+  it("opens and closes the mobile drawer", () => {
+    render(
+      <DashboardLayoutContent title="Dashboard" description="Demo shell">
+        <div>Body content</div>
+      </DashboardLayoutContent>,
+    );
+
+    const menuButton = screen.getByRole("button", { name: /open navigation menu/i });
+    const drawer = screen.getByRole("dialog", { name: /mobile navigation/i });
+
+    expect(menuButton.getAttribute("aria-expanded")).toBe("false");
+    expect(drawer.className).toContain("-translate-x-full");
+
+    fireEvent.click(menuButton);
+
+    expect(menuButton.getAttribute("aria-expanded")).toBe("true");
+    expect(drawer.className).toContain("translate-x-0");
+
+    fireEvent.click(screen.getByRole("button", { name: /close navigation menu/i }));
+
+    expect(menuButton.getAttribute("aria-expanded")).toBe("false");
+    expect(drawer.className).toContain("-translate-x-full");
+  });
+
+  it("renders children through DashboardLayout", () => {
+    render(
+      <DashboardLayout title="Dashboard" description="Demo shell">
+        <div>Shell body</div>
+      </DashboardLayout>,
+    );
+
+    expect(screen.getByRole("heading", { level: 1, name: "Dashboard" })).toBeTruthy();
+    expect(screen.getByText("Shell body")).toBeTruthy();
   });
 });

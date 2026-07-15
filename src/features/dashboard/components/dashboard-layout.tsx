@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { createSupabaseServerClient } from "@/features/auth/lib/auth";
 import { DashboardLayoutContent } from "@/features/dashboard/components/dashboard-layout-content";
 
 interface DashboardLayoutProps {
@@ -8,17 +7,9 @@ interface DashboardLayoutProps {
   children?: ReactNode;
 }
 
-export async function DashboardLayout({ title, description, children }: DashboardLayoutProps) {
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
-
-  const userEmail = error ? null : user?.email ?? null;
-
+export function DashboardLayout({ title, description, children }: DashboardLayoutProps) {
   return (
-    <DashboardLayoutContent title={title} description={description} userEmail={userEmail}>
+    <DashboardLayoutContent title={title} description={description}>
       {children}
     </DashboardLayoutContent>
   );
