@@ -2,15 +2,25 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { signInAction, signUpAction, resetPasswordAction } from "@/features/auth/lib/actions";
+
+const authLinkMessages: Record<string, string> = {
+  invalid: "This sign-in link is invalid or has already been used.",
+  expired: "This sign-in link has expired. Request a new link to continue.",
+};
 
 interface AuthFormProps {
   mode: "sign-in" | "sign-up" | "forgot-password";
 }
 
 export function AuthForm({ mode }: AuthFormProps) {
+  const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const next = searchParams.get("next");
+  const passwordStatus = searchParams.get("password");
+  const authLinkError = searchParams.get("error");
 
   const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
@@ -53,6 +63,8 @@ export function AuthForm({ mode }: AuthFormProps) {
         </label>
       ) : null}
 
+      {mode === "sign-in" && next?.startsWith("/") && !next.startsWith("//") ? <input type="hidden" name="next" value={next} /> : null}
+
       <label className="block text-sm text-zinc-300">
         <span className="mb-2 block">Email</span>
         <input type="email" name="email" required className="w-full rounded-2xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-zinc-100" />
@@ -66,6 +78,12 @@ export function AuthForm({ mode }: AuthFormProps) {
       ) : null}
 
       {error ? <p className="text-sm text-rose-400">{error}</p> : null}
+      {mode === "sign-in" && authLinkError ? (
+        <p className="text-sm text-rose-400">{authLinkMessages[authLinkError] ?? authLinkMessages.invalid}</p>
+      ) : null}
+      {mode === "sign-in" && passwordStatus === "updated" ? (
+        <p className="text-sm text-emerald-400">Password updated. Sign in with your new password.</p>
+      ) : null}
 
       <button type="submit" disabled={isSubmitting} className="w-full rounded-full bg-zinc-100 px-4 py-2.5 text-sm font-medium text-zinc-950 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400">
         {isSubmitting ? "Working..." : mode === "forgot-password" ? "Send reset link" : mode === "sign-up" ? "Create account" : "Sign in"}

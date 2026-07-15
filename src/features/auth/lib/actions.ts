@@ -3,10 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/features/auth/lib/auth";
+import { getSafeLocalRedirectPath } from "@/features/auth/lib/redirects";
 
 export async function signInAction(formData: FormData) {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
+  const next = getSafeLocalRedirectPath(formData.get("next"));
   const supabase = await createSupabaseServerClient();
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -15,7 +17,7 @@ export async function signInAction(formData: FormData) {
   }
 
   revalidatePath("/");
-  redirect("/");
+  redirect(next);
 }
 
 export async function signUpAction(formData: FormData) {
@@ -54,7 +56,7 @@ export async function resetPasswordAction(formData: FormData) {
   const supabase = await createSupabaseServerClient();
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/reset-password`,
+    redirectTo: `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/auth/callback?next=/reset-password`,
   });
 
   if (error) {
@@ -62,4 +64,19 @@ export async function resetPasswordAction(formData: FormData) {
   }
 
   redirect("/sign-in");
+}
+
+export async function updatePasswordAction(formData: FormData) {
+  const password = String(formData.get("password") ?? "");
+  const supabase = await createSupabaseServerClient();
+
+  const { error } = await supabase.auth.updateUser({ password });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  await supabase.auth.signOut();
+  revalidatePath("/");
+  redirect("/sign-in?password=updated");
 }
