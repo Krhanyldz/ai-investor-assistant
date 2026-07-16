@@ -3,6 +3,7 @@ export interface ProfileRecord {
   email: string;
   displayName: string | null;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface AuthFormState {

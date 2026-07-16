@@ -2,10 +2,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
-const { createSupabaseServerClientMock, signOutMock, signInWithPasswordMock, updateUserMock } = vi.hoisted(() => ({
+const { createSupabaseServerClientMock, signOutMock, signInWithPasswordMock, signUpMock, updateUserMock } = vi.hoisted(() => ({
   createSupabaseServerClientMock: vi.fn(),
   signOutMock: vi.fn(),
   signInWithPasswordMock: vi.fn(),
+  signUpMock: vi.fn(),
   updateUserMock: vi.fn(),
 }));
 
@@ -26,6 +27,7 @@ describe("auth actions", () => {
     createSupabaseServerClientMock.mockReset();
     signOutMock.mockReset();
     signInWithPasswordMock.mockReset();
+    signUpMock.mockReset();
     updateUserMock.mockReset();
     vi.mocked(redirect).mockReset();
     vi.mocked(revalidatePath).mockReset();
@@ -33,6 +35,7 @@ describe("auth actions", () => {
       auth: {
         signOut: signOutMock,
         signInWithPassword: signInWithPasswordMock,
+        signUp: signUpMock,
         updateUser: updateUserMock,
       },
     });
@@ -87,6 +90,63 @@ describe("auth actions", () => {
     await signInAction(formData);
 
     expect(redirect).toHaveBeenCalledWith("/");
+  });
+
+  it("normalizes sign-up display names before sending metadata", async () => {
+    signUpMock.mockResolvedValue({ error: null });
+    const { signUpAction } = await import("./actions");
+    const formData = new FormData();
+    formData.set("email", "user@example.com");
+    formData.set("password", "password");
+    formData.set("displayName", "  Ada Lovelace  ");
+
+    await signUpAction(formData);
+
+    expect(signUpMock).toHaveBeenCalledWith({
+      email: "user@example.com",
+      password: "password",
+      options: {
+        data: {
+          display_name: "Ada Lovelace",
+        },
+      },
+    });
+  });
+
+  it("sends null sign-up display name metadata when the field is empty", async () => {
+    signUpMock.mockResolvedValue({ error: null });
+    const { signUpAction } = await import("./actions");
+    const formData = new FormData();
+    formData.set("email", "user@example.com");
+    formData.set("password", "password");
+    formData.set("displayName", "   ");
+
+    await signUpAction(formData);
+
+    expect(signUpMock).toHaveBeenCalledWith({
+      email: "user@example.com",
+      password: "password",
+      options: {
+        data: {
+          display_name: null,
+        },
+      },
+    });
+  });
+
+  it("rejects over-length sign-up display names before calling Supabase", async () => {
+    const { signUpAction } = await import("./actions");
+    const formData = new FormData();
+    formData.set("email", "user@example.com");
+    formData.set("password", "password");
+    formData.set("displayName", "a".repeat(81));
+
+    await expect(signUpAction(formData)).rejects.toThrow("Display name must be 80 characters or fewer.");
+
+    expect(createSupabaseServerClientMock).not.toHaveBeenCalled();
+    expect(signUpMock).not.toHaveBeenCalled();
+    expect(revalidatePath).not.toHaveBeenCalled();
+    expect(redirect).not.toHaveBeenCalled();
   });
 
   it("updates the password, signs out, revalidates root, and redirects to sign in", async () => {
