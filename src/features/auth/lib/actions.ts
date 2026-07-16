@@ -23,7 +23,12 @@ export async function signInAction(formData: FormData) {
 export async function signUpAction(formData: FormData) {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
-  const displayName = String(formData.get("displayName") ?? "");
+  const displayName = String(formData.get("displayName") ?? "").trim();
+
+  if (displayName.length > 80) {
+    throw new Error("Display name must be 80 characters or fewer.");
+  }
+
   const supabase = await createSupabaseServerClient();
 
   const { error } = await supabase.auth.signUp({
@@ -31,7 +36,7 @@ export async function signUpAction(formData: FormData) {
     password,
     options: {
       data: {
-        display_name: displayName,
+        display_name: displayName || null,
       },
     },
   });

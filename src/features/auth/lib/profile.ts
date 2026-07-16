@@ -3,4 +3,5 @@ export interface Profile {
   email: string;
   displayName: string | null;
   createdAt: string;
+  updatedAt: string;
 }

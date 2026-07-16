@@ -59,7 +59,11 @@ export function AuthForm({ mode }: AuthFormProps) {
       {mode === "sign-up" ? (
         <label className="block text-sm text-zinc-300">
           <span className="mb-2 block">Display name</span>
-          <input name="displayName" className="w-full rounded-2xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-zinc-100" />
+          <input
+            name="displayName"
+            maxLength={80}
+            className="w-full rounded-2xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-zinc-100"
+          />
         </label>
       ) : null}
 
