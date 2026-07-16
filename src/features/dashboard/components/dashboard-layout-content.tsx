@@ -7,11 +7,25 @@ import { navItems } from "@/features/dashboard/data/navigation";
 import { PageHeader } from "@/features/dashboard/components/page-header";
 import { marketStripItems } from "@/features/dashboard/data/demo-content";
 import { AIDisclaimer } from "@/features/consent/components/ai-disclaimer";
+import { signOutAction } from "@/features/auth/lib/actions";
 
 interface DashboardLayoutContentProps {
   title: string;
   description: string;
   children?: ReactNode;
+}
+
+function SignOutControl({ className = "" }: { className?: string }) {
+  return (
+    <form action={signOutAction} className={className}>
+      <button
+        type="submit"
+        className="w-full rounded-lg border border-zinc-700 px-4 py-3 text-left text-sm font-medium text-zinc-200 transition-colors hover:border-rose-400/60 hover:bg-rose-500/10 hover:text-rose-100 focus:outline-none focus:ring-2 focus:ring-rose-300"
+      >
+        Sign out
+      </button>
+    </form>
+  );
 }
 
 export function DashboardLayoutContent({ title, description, children }: DashboardLayoutContentProps) {
@@ -56,13 +70,14 @@ export function DashboardLayoutContent({ title, description, children }: Dashboa
                 </Link>
               );
             })}
+            <SignOutControl className="mt-4 border-t border-zinc-800 pt-4" />
           </nav>
 
           <div className="mt-auto flex flex-col gap-3 rounded-lg border border-zinc-800 bg-zinc-900/70 p-4">
             <div className="space-y-1">
               <p className="text-xs uppercase text-zinc-500">Demo mode</p>
               <p className="text-sm leading-6 text-zinc-300">
-                Sample data only. No authentication, APIs, or charts are connected.
+                Market data, APIs, and charts are demo/sample only.
               </p>
             </div>
           </div>
@@ -165,6 +180,9 @@ export function DashboardLayoutContent({ title, description, children }: Dashboa
             );
           })}
         </nav>
+        <div className="mt-8 border-t border-zinc-800 pt-4">
+          <SignOutControl />
+        </div>
       </div>
     </div>
   );

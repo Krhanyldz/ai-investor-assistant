@@ -39,7 +39,7 @@ export function DemoWorkspace({ workspace }: DemoWorkspaceProps) {
               </div>
             ))}
             <div className="rounded-lg border border-emerald-400/20 bg-emerald-400/10 p-3 text-emerald-100">
-              Demo/sample data only. No API integration, authentication, or charts are active.
+              Demo/sample data only. Market data, API integrations, and charts are not active.
             </div>
           </div>
         </PanelCard>
