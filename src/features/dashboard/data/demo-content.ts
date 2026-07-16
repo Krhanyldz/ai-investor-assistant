@@ -35,7 +35,7 @@ export const demoWorkspaces: Record<string, DemoWorkspace> = {
   dashboard: {
     title: "Sample account overview",
     description:
-      "A static dashboard preview for validating the premium shell before live data, charts, or authentication are added.",
+      "A static dashboard preview for validating the premium shell before live market data or charts are added.",
     items: [
       { label: "Sample allocation", value: "62% equity", detail: "Demo blend across stocks, ETFs, and cash." },
       { label: "Demo momentum", value: "+2.8% MTD", detail: "Placeholder month-to-date movement." },
@@ -71,7 +71,7 @@ export const demoWorkspaces: Record<string, DemoWorkspace> = {
   },
   portfolio: {
     title: "Sample portfolio",
-    description: "A non-authenticated portfolio preview with demo balances and no account integration.",
+    description: "A portfolio preview with demo balances and no brokerage account integration.",
     items: [
       { label: "Largest position", value: "14.2%", detail: "Demo concentration indicator." },
       { label: "Estimated cash", value: "$24,100", detail: "Static value copied from sample metrics." },

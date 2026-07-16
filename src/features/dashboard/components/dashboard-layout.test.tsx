@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { DashboardLayout } from "./dashboard-layout";
 import { DashboardLayoutContent } from "./dashboard-layout-content";
 
@@ -9,12 +9,16 @@ vi.mock("next/navigation", () => ({
   usePathname: () => currentPathname,
 }));
 
+vi.mock("@/features/auth/lib/actions", () => ({
+  signOutAction: vi.fn(),
+}));
+
 describe("DashboardLayoutContent", () => {
   beforeEach(() => {
     currentPathname = "/";
   });
 
-  it("renders the title, demo labels, market strip, and page content without auth UI", () => {
+  it("renders the title, demo labels, market strip, sign-out controls, and page content", () => {
     render(
       <DashboardLayoutContent title="Dashboard" description="Demo shell">
         <div>Body content</div>
@@ -24,8 +28,10 @@ describe("DashboardLayoutContent", () => {
     expect(screen.getByRole("heading", { level: 1, name: "Dashboard" })).toBeTruthy();
     expect(screen.getByText("Demo / sample data")).toBeTruthy();
     expect(screen.getByText("Top market strip - sample data")).toBeTruthy();
-    expect(screen.getByText("Sample data only. No authentication, APIs, or charts are connected.")).toBeTruthy();
-    expect(screen.queryByRole("button", { name: /sign out/i })).toBeNull();
+    expect(screen.getByText("Market data, APIs, and charts are demo/sample only.")).toBeTruthy();
+    expect(screen.getAllByRole("button", { name: /sign out/i })).toHaveLength(2);
+    expect(within(screen.getByRole("navigation", { name: "Primary" })).getByRole("button", { name: /sign out/i })).toBeTruthy();
+    expect(within(screen.getByRole("dialog", { name: /mobile navigation/i })).getByRole("button", { name: /sign out/i })).toBeTruthy();
     expect(screen.getByText("Body content")).toBeTruthy();
   });
 
