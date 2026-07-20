@@ -26,6 +26,18 @@ Open http://localhost:3000 to view the app.
 - `npm run lint` — run ESLint
 - `npm run test` — run the Vitest suite
 
+## Continuous integration
+
+The [Quality Gates workflow](.github/workflows/quality.yml) runs for every pull request and every push to `main`. It installs the locked dependencies with `npm ci`, uses the npm dependency cache, and runs these independent checks:
+
+- `Lint` — ESLint
+- `Test` — Vitest unit tests
+- `Build` — Next.js production build
+
+The workflow uses non-secret placeholder environment values that are sufficient for compilation. Production credentials are never exposed to pull-request workflows.
+
+Configure the `main` branch protection rule to require the `Lint`, `Test`, and `Build` status checks before merging. GitHub only offers a check in the branch-protection selector after that check has run at least once.
+
 ## Supabase database
 
 The profile schema is managed through versioned SQL migrations in [supabase/migrations](supabase/migrations). Do not edit the hosted database schema manually after adopting these migrations; create a new migration instead.
