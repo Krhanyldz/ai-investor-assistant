@@ -19,6 +19,7 @@ export function readConsentState(): ConsentState | null {
     return {
       isAccepted: Boolean(parsed.accepted),
       version: parsed.version,
+      acceptedAt: typeof parsed.acceptedAt === "string" ? parsed.acceptedAt : null,
     };
   } catch {
     return null;
@@ -33,12 +34,16 @@ export function writeConsentState(state: ConsentState): void {
   const record: ConsentRecord = {
     accepted: state.isAccepted,
     version: state.version,
-    acceptedAt: new Date().toISOString(),
+    acceptedAt: state.acceptedAt ?? new Date().toISOString(),
   };
 
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(record));
 }
 
 export function hasValidConsent(state: ConsentState | null, currentVersion: string): boolean {
-  return Boolean(state?.isAccepted && state.version === currentVersion);
+  if (!state?.isAccepted || state.version !== currentVersion || !state.acceptedAt) {
+    return false;
+  }
+
+  return !Number.isNaN(Date.parse(state.acceptedAt));
 }
