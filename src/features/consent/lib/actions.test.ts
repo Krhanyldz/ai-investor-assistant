@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { AuthSessionMissingError } from "@supabase/supabase-js";
 import { CONSENT_VERSION } from "@/features/consent/data/consent";
 
 const {
@@ -50,7 +51,10 @@ describe("consent actions", () => {
   });
 
   it("returns a genuine signed-out consent status", async () => {
-    getUserMock.mockResolvedValue({ data: { user: null }, error: null });
+    getUserMock.mockResolvedValue({
+      data: { user: null },
+      error: new AuthSessionMissingError(),
+    });
     const { getCurrentConsentStatus } = await import("./actions");
 
     await expect(getCurrentConsentStatus()).resolves.toEqual({

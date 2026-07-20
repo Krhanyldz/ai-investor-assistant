@@ -1,5 +1,6 @@
 "use server";
 
+import { isAuthSessionMissingError } from "@supabase/supabase-js";
 import { createSupabaseServerClient } from "@/features/auth/lib/auth";
 import { CONSENT_VERSION } from "@/features/consent/data/consent";
 import type { AuthenticatedConsentStatus } from "@/features/consent/types/consent";
@@ -16,7 +17,7 @@ export async function getCurrentConsentStatus(): Promise<AuthenticatedConsentSta
     error: userError,
   } = await supabase.auth.getUser();
 
-  if (userError) {
+  if (userError && !isAuthSessionMissingError(userError)) {
     throw new Error(userError.message);
   }
 
