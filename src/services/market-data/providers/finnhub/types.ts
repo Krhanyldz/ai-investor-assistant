@@ -29,3 +29,5 @@ export interface FinnhubBasicFinancialsResponse {
   series?: unknown;
   symbol?: string;
 }
+
+export interface FinnhubSymbolSearchResponse { count?: number; result?: Array<{ description?: string; displaySymbol?: string; symbol?: string; type?: string }> }

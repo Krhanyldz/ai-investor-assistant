@@ -58,3 +58,5 @@ export interface BasicFinancialMetrics {
   metric: Record<string, number | string | null>;
   source: MarketDataSource;
 }
+
+export interface AssetSearchResult { symbol: string; displaySymbol: string; name: string; type: string }

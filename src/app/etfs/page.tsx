@@ -1,13 +1,15 @@
 import { DashboardLayout } from "@/features/dashboard/components/dashboard-layout";
-import { DemoWorkspace } from "@/features/dashboard/components/demo-workspace";
+import { AssetSearch } from "@/features/search/components/asset-search";
+import { searchAssets } from "@/services/market-data";
 
-export default function EtfsPage() {
+export default async function EtfsPage({searchParams}:{searchParams:Promise<{q?:string}>}) {
+  const query=((await searchParams).q??"").trim(); const result=query?await searchAssets(query):undefined;
   return (
     <DashboardLayout
       title="ETFs"
-      description="A sample ETFs workspace prepared for allocation views and sector research."
+      description="Search sourced ETF listings and open fund research."
     >
-      <DemoWorkspace workspace="etfs" />
+      <AssetSearch query={query} kind="etfs" result={result} />
     </DashboardLayout>
   );
 }
