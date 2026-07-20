@@ -1,13 +1,17 @@
 import { DashboardLayout } from "@/features/dashboard/components/dashboard-layout";
-import { DemoWorkspace } from "@/features/dashboard/components/demo-workspace";
+import { WatchlistView } from "@/features/watchlist/components/watchlist-view";
+import { getWatchlistItems } from "@/features/watchlist/lib/actions";
+import { getStockQuote } from "@/services/market-data";
 
-export default function WatchlistPage() {
+export default async function WatchlistPage() {
+  const result=await getWatchlistItems();
+  const rows=await Promise.all(result.items.map(async item=>({...item,quote:await getStockQuote(item.symbol)})));
   return (
     <DashboardLayout
       title="Watchlist"
-      description="A sample watchlist workspace for tracking ideas and upcoming research notes."
+      description="Track research ideas with sourced market-data timestamps."
     >
-      <DemoWorkspace workspace="watchlist" />
+      <WatchlistView rows={rows} error={result.error} />
     </DashboardLayout>
   );
 }
