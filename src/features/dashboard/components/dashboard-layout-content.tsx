@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navItems } from "@/features/dashboard/data/navigation";
 import { PageHeader } from "@/features/dashboard/components/page-header";
-import { marketStripItems } from "@/features/dashboard/data/demo-content";
 import { AIDisclaimer } from "@/features/consent/components/ai-disclaimer";
 import { signOutAction } from "@/features/auth/lib/actions";
 
@@ -73,14 +72,7 @@ export function DashboardLayoutContent({ title, description, children }: Dashboa
             <SignOutControl className="mt-4 border-t border-zinc-800 pt-4" />
           </nav>
 
-          <div className="mt-auto flex flex-col gap-3 rounded-lg border border-zinc-800 bg-zinc-900/70 p-4">
-            <div className="space-y-1">
-              <p className="text-xs uppercase text-zinc-500">Demo mode</p>
-              <p className="text-sm leading-6 text-zinc-300">
-                Market data, APIs, and charts are demo/sample only.
-              </p>
-            </div>
-          </div>
+          <div className="mt-auto rounded-lg border border-zinc-800 bg-zinc-900/70 p-4 text-sm leading-6 text-zinc-400">Research workspace · Not investment advice</div>
         </aside>
 
         <div className="flex min-h-screen flex-1 flex-col">
@@ -100,30 +92,15 @@ export function DashboardLayoutContent({ title, description, children }: Dashboa
                   </span>
                 </button>
                 <div>
-                  <p className="text-xs uppercase text-zinc-500">Premium dashboard shell</p>
-                  <p className="text-sm text-zinc-400">Demo / sample data only</p>
+                  <p className="text-xs uppercase text-zinc-500">AI Investor</p>
+                  <p className="text-sm text-zinc-400">Research and portfolio workspace</p>
                 </div>
               </div>
-              <div className="hidden rounded-lg border border-emerald-400/20 bg-emerald-400/10 px-3 py-2 text-sm text-emerald-100 sm:block">
-                Markets open - sample feed
-              </div>
+              <div className="hidden rounded-lg border border-emerald-400/20 bg-emerald-400/10 px-3 py-2 text-sm text-emerald-100 sm:block">Source timestamps shown with market data</div>
             </div>
           </header>
 
           <div className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
-            <div className="mb-6 rounded-lg border border-zinc-800 bg-zinc-900/70 px-4 py-3 text-sm text-zinc-400 sm:px-6">
-              <p className="mb-3 text-xs font-medium uppercase text-zinc-500">Top market strip - sample data</p>
-              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                {marketStripItems.map((item) => (
-                  <div key={item.label} className="flex items-center justify-between gap-3 rounded-md bg-zinc-950/70 px-3 py-2">
-                    <span className="font-medium text-zinc-200">{item.label}</span>
-                    <span className="text-zinc-400">{item.value}</span>
-                    <span className="font-medium text-emerald-300">{item.change}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
             <PageHeader title={title} description={description} />
 
             <main className="mt-6">{children}</main>

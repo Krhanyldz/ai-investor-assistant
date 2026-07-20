@@ -18,7 +18,7 @@ describe("DashboardLayoutContent", () => {
     currentPathname = "/";
   });
 
-  it("renders the title, demo labels, market strip, sign-out controls, and page content", () => {
+  it("renders truthful workspace labels, sign-out controls, and page content", () => {
     render(
       <DashboardLayoutContent title="Dashboard" description="Demo shell">
         <div>Body content</div>
@@ -26,9 +26,8 @@ describe("DashboardLayoutContent", () => {
     );
 
     expect(screen.getByRole("heading", { level: 1, name: "Dashboard" })).toBeTruthy();
-    expect(screen.getByText("Demo / sample data")).toBeTruthy();
-    expect(screen.getByText("Top market strip - sample data")).toBeTruthy();
-    expect(screen.getByText("Market data, APIs, and charts are demo/sample only.")).toBeTruthy();
+    expect(screen.getByText("Research and portfolio workspace")).toBeTruthy();
+    expect(screen.getByText("Research workspace · Not investment advice")).toBeTruthy();
     expect(screen.getAllByRole("button", { name: /sign out/i })).toHaveLength(2);
     expect(within(screen.getByRole("navigation", { name: "Primary" })).getByRole("button", { name: /sign out/i })).toBeTruthy();
     expect(within(screen.getByRole("dialog", { name: /mobile navigation/i })).getByRole("button", { name: /sign out/i })).toBeTruthy();
