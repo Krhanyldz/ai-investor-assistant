@@ -73,7 +73,8 @@ describe("StockResearchPage", () => {
     expect(screen.getByRole("heading", { level: 2, name: "Company Overview" })).toBeTruthy();
     expect(screen.getByRole("heading", { level: 2, name: "Valuation" })).toBeTruthy();
     expect(screen.getByRole("heading", { level: 2, name: "Sources" })).toBeTruthy();
-    expect(screen.getByText("AI summary is unavailable. AI-generated content has not been implemented.")).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Open structured AI research" }).getAttribute("href")).toBe("/ai-research/AAPL");
+    expect(screen.getByRole("link", { name: "Generate source-bound risk research" })).toBeTruthy();
   });
 
   it("renders available data when one provider call fails", () => {
