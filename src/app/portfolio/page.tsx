@@ -1,13 +1,15 @@
 import { DashboardLayout } from "@/features/dashboard/components/dashboard-layout";
-import { DemoWorkspace } from "@/features/dashboard/components/demo-workspace";
+import { PortfolioView } from "@/features/portfolio/components/portfolio-view";
+import { getPortfolioPositions } from "@/features/portfolio/lib/actions";
 
-export default function PortfolioPage() {
+export default async function PortfolioPage() {
+  const result = await getPortfolioPositions();
   return (
     <DashboardLayout
       title="Portfolio"
-      description="A sample portfolio workspace for future holdings views and position analysis."
+      description="Track manually entered holdings and their cost basis. Values are not personalized advice."
     >
-      <DemoWorkspace workspace="portfolio" />
+      <PortfolioView positions={result.positions} error={result.error} />
     </DashboardLayout>
   );
 }
