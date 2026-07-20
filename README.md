@@ -19,6 +19,8 @@ npm run dev
 
 Open http://localhost:3000 to view the app.
 
+Copy `.env.example` to `.env.local` and replace only the services you use. AI research requires a server-only `OPENAI_API_KEY`; never prefix it with `NEXT_PUBLIC_` or commit the value. `OPENAI_MODEL` is optional and defaults to the model shown in `.env.example`.
+
 ## Available scripts
 
 - `npm run dev` — start the development server
