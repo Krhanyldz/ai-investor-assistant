@@ -1,4 +1,5 @@
 import type {
+  AssetSearchResult,
   BasicFinancialMetrics,
   CompanyProfile,
   MarketDataResult,
@@ -14,6 +15,8 @@ import { FinnhubMarketDataProvider } from "@/services/market-data/providers/finn
 import type { MarketDataProvider } from "@/services/market-data/types";
 
 const provider = new FinnhubMarketDataProvider();
+
+export function searchAssets(query: string): Promise<MarketDataResult<AssetSearchResult[]>> { return provider.searchAssets(query); }
 
 function shouldUseDevelopmentFallback<T>(result: MarketDataResult<T>) {
   return !result.ok && process.env.NODE_ENV === "development";

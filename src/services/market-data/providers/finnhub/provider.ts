@@ -1,4 +1,5 @@
 import type {
+  AssetSearchResult,
   BasicFinancialMetrics,
   CompanyProfile,
   MarketDataResult,
@@ -11,6 +12,7 @@ import type {
   FinnhubBasicFinancialsResponse,
   FinnhubCompanyProfileResponse,
   FinnhubQuoteResponse,
+  FinnhubSymbolSearchResponse,
 } from "@/services/market-data/providers/finnhub/types";
 
 function normalizeSymbol(symbol: string) {
@@ -141,6 +143,14 @@ function parseBasicFinancials(
 }
 
 export class FinnhubMarketDataProvider implements MarketDataProvider {
+  async searchAssets(query: string): Promise<MarketDataResult<AssetSearchResult[]>> {
+    const normalizedQuery = query.trim();
+    if (normalizedQuery.length < 1 || normalizedQuery.length > 80) return invalidResponse("Search query must contain 1–80 characters.");
+    const response = await fetchFinnhubJson<FinnhubSymbolSearchResponse>({ endpoint: "/search", params: { q: normalizedQuery } });
+    if (!response.ok) return response;
+    if (!Array.isArray(response.data.result)) return invalidResponse("Finnhub search response was missing its result list.");
+    return { ok: true, data: response.data.result.flatMap((item) => item.symbol && item.description ? [{ symbol: item.symbol, displaySymbol: item.displaySymbol ?? item.symbol, name: item.description, type: item.type ?? "Unknown" }] : []).slice(0, 25) };
+  }
   async getQuote(symbol: string): Promise<MarketDataResult<StockQuote>> {
     const normalizedSymbol = normalizeSymbol(symbol);
     const response = await fetchFinnhubJson<FinnhubQuoteResponse>({

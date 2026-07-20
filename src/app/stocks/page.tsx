@@ -1,13 +1,15 @@
 import { DashboardLayout } from "@/features/dashboard/components/dashboard-layout";
-import { DemoWorkspace } from "@/features/dashboard/components/demo-workspace";
+import { AssetSearch } from "@/features/search/components/asset-search";
+import { searchAssets } from "@/services/market-data";
 
-export default function StocksPage() {
+export default async function StocksPage({searchParams}:{searchParams:Promise<{q?:string}>}) {
+  const query=((await searchParams).q??"").trim(); const result=query?await searchAssets(query):undefined;
   return (
     <DashboardLayout
       title="Stocks"
-      description="A sample stocks workspace for future watchlists, research summaries, and market context."
+      description="Search sourced equity listings and open detailed research."
     >
-      <DemoWorkspace workspace="stocks" />
+      <AssetSearch query={query} kind="stocks" result={result} />
     </DashboardLayout>
   );
 }
