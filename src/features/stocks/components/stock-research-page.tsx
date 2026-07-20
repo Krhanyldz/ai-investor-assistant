@@ -1,3 +1,5 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
 import type {
   BasicFinancialMetrics,
   CompanyProfile,
@@ -53,11 +55,11 @@ function DetailRow({ label, value }: DetailRowProps) {
   );
 }
 
-function PlaceholderSection({ title, children }: { title: string; children: string }) {
+function PlaceholderSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="rounded-lg border border-zinc-800 bg-zinc-900/80 p-5">
       <h2 className="text-base font-semibold text-zinc-100">{title}</h2>
-      <p className="mt-3 text-sm leading-6 text-zinc-400">{children}</p>
+      <div className="mt-3 text-sm leading-6 text-zinc-400">{children}</div>
     </section>
   );
 }
@@ -225,10 +227,10 @@ export function StockResearchPage({
       <div className="grid gap-6 xl:grid-cols-2">
         <CompanyOverview profile={profile} />
         <ValuationSection profile={profile} financials={financials} />
-        <PlaceholderSection title="Business Summary">Business summary is unavailable. This section is not implemented yet.</PlaceholderSection>
-        <PlaceholderSection title="Risk Factors">AI risk factor analysis is unavailable. AI logic is not implemented yet.</PlaceholderSection>
+        <PlaceholderSection title="Business Summary">A narrative summary is unavailable from the configured market-data provider. No description has been fabricated.</PlaceholderSection>
+        <PlaceholderSection title="Risk Factors"><Link href={`/ai-research/${encodeURIComponent(symbol)}?question=${encodeURIComponent("Explain the key business and valuation risks")}`} className="text-emerald-300 underline">Generate source-bound risk research</Link> with the AI research workspace.</PlaceholderSection>
       </div>
-      <PlaceholderSection title="AI Summary">AI summary is unavailable. AI-generated content has not been implemented.</PlaceholderSection>
+      <PlaceholderSection title="AI Summary"><Link href={`/ai-research/${encodeURIComponent(symbol)}`} className="text-emerald-300 underline">Open structured AI research</Link> for bull and bear cases, assumptions, catalysts, risks, and evidence quality.</PlaceholderSection>
       {sources.length > 0 ? <SourcesSection sources={sources} /> : null}
     </div>
   );

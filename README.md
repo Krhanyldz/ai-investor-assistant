@@ -21,6 +21,16 @@ Open http://localhost:3000 to view the app.
 
 Copy `.env.example` to `.env.local` and replace only the services you use. AI research requires a server-only `OPENAI_API_KEY`; never prefix it with `NEXT_PUBLIC_` or commit the value. `OPENAI_MODEL` is optional and defaults to the model shown in `.env.example`.
 
+Required production configuration:
+
+- `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` — browser-safe Supabase project values
+- `NEXT_PUBLIC_APP_URL` — exact deployed origin, also added to Supabase Auth redirect URLs
+- `FINNHUB_API_KEY` — server-only market-data credential
+- `OPENAI_API_KEY` — optional, server-only; required only for AI research
+- `OPENAI_MODEL` — optional model override
+
+Before release, apply reviewed Supabase migrations, run `npx supabase test db`, configure the production auth callback URL (`/auth/callback`), verify email confirmation and password recovery, and require the `Lint`, `Test`, and `Build` branch-protection checks. Do not place server-only keys in variables prefixed with `NEXT_PUBLIC_`.
+
 ## Available scripts
 
 - `npm run dev` — start the development server
