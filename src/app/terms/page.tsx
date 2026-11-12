@@ -6,8 +6,8 @@ export default function TermsPage() {
       <h2>Purpose and status</h2>
       <p>
         AI Investor Assistant is a pre-production research and education project. It is intended to help organize investment
-        research workflows, demo portfolio views, watchlists, and future AI-assisted notes. It is not ready for production
-        use and must receive professional legal review before launch.
+        research workflows, manual portfolio cost-basis tracking, watchlists, and source-bound AI research analysis. It is not
+        ready for production use and must receive professional legal review before launch.
       </p>
       <h2>No regulated financial service</h2>
       <p>
@@ -29,14 +29,15 @@ export default function TermsPage() {
       </p>
       <h2>Data, demos, and availability</h2>
       <p>
-        Finnhub is the current configured market-data source where live data is available. Other areas may contain clearly
-        labelled demo or sample data. Features, data providers, calculations, route protection, and content may change or be
-        removed during development, and service availability is not guaranteed.
+        Finnhub is the current configured market-data source where live data is available, and development fallback data is
+        explicitly labelled. Features, data providers, calculations, route protection, and content may change or be removed
+        during development, and service availability is not guaranteed.
       </p>
       <h2>Third-party services</h2>
       <p>
-        Supabase is used for authentication and related database features. Finnhub may be used for configured market-data
-        requests. Third-party service terms, availability, limits, and data quality may affect the application.
+        Supabase is used for authentication and user database features. Finnhub is used for configured market-data requests,
+        and OpenAI is used for configured AI research generation. Third-party service terms, availability, limits, and data
+        quality may affect the application.
       </p>
       <h2>Legal review required</h2>
       <p>

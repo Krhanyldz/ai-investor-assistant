@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type {
   CompanyProfile,
   MarketDataError,
@@ -6,7 +7,7 @@ import type {
   StockQuote,
 } from "@/domain/market-data";
 import { EtfResearchEmptyState, EtfResearchErrorCard } from "@/features/etfs/components/etf-research-states";
-import { formatCurrency, formatDateTime, getFreshnessLabel } from "@/features/stocks/lib/format";
+import { formatCurrency, formatDateTime, formatPercent, getFreshnessLabel } from "@/features/stocks/lib/format";
 
 interface EtfResearchPageProps {
   symbol: string;
@@ -64,6 +65,8 @@ export function EtfResearchPage({ symbol, quoteResult, profileResult }: EtfResea
   const errors = [quoteResult, profileResult].flatMap((result) => (result.ok ? [] : [result.error]));
   const sources = [quote?.source, profile?.source].filter((source): source is MarketDataSource => Boolean(source));
   const primarySource = quote?.source ?? profile?.source;
+  const currency = profile?.currency ?? "USD";
+  const changeIsPositive = (quote?.change ?? 0) >= 0;
 
   if (!quote && !profile) {
     return (
@@ -89,7 +92,10 @@ export function EtfResearchPage({ symbol, quoteResult, profileResult }: EtfResea
           <div className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-4 lg:min-w-64">
             <p className="text-sm text-zinc-400">Current market price</p>
             <p className="mt-2 text-3xl font-semibold text-zinc-100">
-              {formatCurrency(quote?.currentPrice, profile?.currency ?? "USD")}
+              {formatCurrency(quote?.currentPrice, currency)}
+            </p>
+            <p className={`mt-2 text-sm font-medium ${changeIsPositive ? "text-emerald-300" : "text-rose-300"}`}>
+              {quote ? `${formatCurrency(quote.change, currency)} (${formatPercent(quote.percentChange)})` : "Unavailable"}
             </p>
           </div>
         </div>
@@ -140,6 +146,15 @@ export function EtfResearchPage({ symbol, quoteResult, profileResult }: EtfResea
           <MissingDataset description="Comparable funds are unavailable from the configured provider. Alternatives are not ranked or recommended without comparable fund data." />
         </Section>
       </div>
+
+      <Section title="AI Summary">
+        <p className="text-sm leading-6 text-zinc-400">
+          <Link href={`/ai-research/${encodeURIComponent(symbol)}`} className="text-emerald-300 underline">
+            Open structured AI research
+          </Link>{" "}
+          for source-bound bull and bear cases, assumptions, catalysts, risks, and evidence quality.
+        </p>
+      </Section>
 
       <Section title="Sources">
         <div className="grid gap-3 md:grid-cols-2">

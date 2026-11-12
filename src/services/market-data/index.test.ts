@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getStockQuote, marketDataCache } from "@/services/market-data";
+import { getStockQuote, marketDataCache, searchAssets } from "@/services/market-data";
 
 describe("market data service facade", () => {
   afterEach(() => {
@@ -19,6 +19,20 @@ describe("market data service facade", () => {
       expect(result.data.source.provider).toBe("development-mock");
       expect(result.data.source.isFallback).toBe(true);
       expect(result.data.source.label).toContain("Development mock data");
+    }
+  });
+
+  it("returns development sample search results when Finnhub is unconfigured in development", async () => {
+    vi.stubEnv("NODE_ENV", "development");
+    vi.stubEnv("FINNHUB_API_KEY", "");
+
+    const result = await searchAssets("aapl");
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.data).toEqual([
+        expect.objectContaining({ symbol: "AAPL", displaySymbol: "AAPL" }),
+      ]);
     }
   });
 

@@ -39,7 +39,7 @@ export function DashboardLayoutContent({ title, description, children }: Dashboa
       return normalizedPathname === "/" || normalizedPathname === "/dashboard";
     }
 
-    return normalizedPathname === normalizedHref;
+    return normalizedPathname === normalizedHref || normalizedPathname.startsWith(`${normalizedHref}/`);
   };
 
   return (

@@ -10,16 +10,15 @@ import {
   createDevelopmentBasicFinancials,
   createDevelopmentCompanyProfile,
   createDevelopmentQuote,
+  createDevelopmentSearchResults,
 } from "@/services/market-data/mock-data";
 import { FinnhubMarketDataProvider } from "@/services/market-data/providers/finnhub/provider";
 import type { MarketDataProvider } from "@/services/market-data/types";
 
 const provider = new FinnhubMarketDataProvider();
 
-export function searchAssets(query: string): Promise<MarketDataResult<AssetSearchResult[]>> { return provider.searchAssets(query); }
-
 function shouldUseDevelopmentFallback<T>(result: MarketDataResult<T>) {
-  return !result.ok && process.env.NODE_ENV === "development";
+  return !result.ok && result.error.code !== "invalid_provider_response" && process.env.NODE_ENV === "development";
 }
 
 async function withDevelopmentFallback<T>(
@@ -28,6 +27,17 @@ async function withDevelopmentFallback<T>(
 ): Promise<MarketDataResult<T>> {
   const result = await load();
   return shouldUseDevelopmentFallback(result) ? fallback() : result;
+}
+
+export function searchAssets(query: string): Promise<MarketDataResult<AssetSearchResult[]>> {
+  const normalizedQuery = query.trim();
+
+  return marketDataCache.getOrSet(`finnhub:search:${normalizedQuery.toLowerCase()}`, () =>
+    withDevelopmentFallback(
+      () => provider.searchAssets(normalizedQuery),
+      () => createDevelopmentSearchResults(normalizedQuery),
+    ),
+  );
 }
 
 export function getMarketDataProvider(): MarketDataProvider {
