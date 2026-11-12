@@ -28,7 +28,7 @@ describe("proxy", () => {
     });
   });
 
-  it.each(["/", "/stocks", "/etfs", "/watchlist", "/portfolio", "/ai-research", "/settings"])(
+  it.each(["/", "/dashboard", "/stocks", "/etfs", "/watchlist", "/portfolio", "/ai-research", "/settings"])(
     "redirects unauthenticated access to %s",
     async (path) => {
       getUserMock.mockResolvedValue({ data: { user: null }, error: new Error("missing") });

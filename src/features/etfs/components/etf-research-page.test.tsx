@@ -32,7 +32,7 @@ describe("EtfResearchPage", () => {
     render(<EtfResearchPage symbol="VTI" quoteResult={{ ok: true, data: quote }} profileResult={{ ok: true, data: profile }} />);
 
     expect(screen.getByRole("heading", { level: 1, name: profile.name })).toBeTruthy();
-    for (const heading of ["Fund overview", "Top holdings", "Country exposure", "Sector exposure", "Main risks", "Alternatives", "Sources"]) {
+    for (const heading of ["Fund overview", "Top holdings", "Country exposure", "Sector exposure", "Main risks", "Alternatives", "AI Summary", "Sources"]) {
       expect(screen.getByRole("heading", { level: 2, name: heading })).toBeTruthy();
     }
     expect(screen.getAllByText("Unavailable from the configured provider").length).toBeGreaterThan(3);
@@ -40,6 +40,7 @@ describe("EtfResearchPage", () => {
     expect(screen.getByText("Assets under management (AUM)")).toBeTruthy();
     expect(screen.getByText("Distribution policy")).toBeTruthy();
     expect(screen.getByText("Replication method")).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Open structured AI research" }).getAttribute("href")).toBe("/ai-research/VTI");
   });
 
   it("keeps partial data visible when one provider call fails", () => {

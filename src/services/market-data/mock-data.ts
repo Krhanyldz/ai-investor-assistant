@@ -1,10 +1,20 @@
 import type {
+  AssetSearchResult,
   BasicFinancialMetrics,
   CompanyProfile,
   MarketDataResult,
   MarketDataSource,
   StockQuote,
 } from "@/domain/market-data";
+
+const developmentAssets: AssetSearchResult[] = [
+  { symbol: "AAPL", displaySymbol: "AAPL", name: "Apple Inc. (Development Sample)", type: "Common Stock" },
+  { symbol: "MSFT", displaySymbol: "MSFT", name: "Microsoft Corp. (Development Sample)", type: "Common Stock" },
+  { symbol: "NVDA", displaySymbol: "NVDA", name: "NVIDIA Corp. (Development Sample)", type: "Common Stock" },
+  { symbol: "VTI", displaySymbol: "VTI", name: "Vanguard Total Stock Market ETF (Development Sample)", type: "ETP" },
+  { symbol: "SPY", displaySymbol: "SPY", name: "SPDR S&P 500 ETF Trust (Development Sample)", type: "ETP" },
+  { symbol: "QQQ", displaySymbol: "QQQ", name: "Invesco QQQ Trust ETF (Development Sample)", type: "ETP" },
+];
 
 function createDevelopmentSource(symbol: string): MarketDataSource {
   const now = new Date().toISOString();
@@ -15,6 +25,18 @@ function createDevelopmentSource(symbol: string): MarketDataSource {
     dataTimestamp: now,
     isFallback: true,
     label: `Development mock data for ${symbol}. Not live market data.`,
+  };
+}
+
+export function createDevelopmentSearchResults(query: string): MarketDataResult<AssetSearchResult[]> {
+  const normalized = query.trim().toLowerCase();
+  const matches = developmentAssets.filter(
+    (asset) => asset.symbol.toLowerCase().includes(normalized) || asset.name.toLowerCase().includes(normalized),
+  );
+
+  return {
+    ok: true,
+    data: matches,
   };
 }
 

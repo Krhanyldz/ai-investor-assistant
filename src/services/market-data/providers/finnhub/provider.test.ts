@@ -90,4 +90,29 @@ describe("FinnhubMarketDataProvider", () => {
       expect(result.data.source.provider).toBe("finnhub");
     }
   });
+
+  it("parses asset search results and validates query bounds", async () => {
+    vi.stubEnv("FINNHUB_API_KEY", "server-secret");
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        Response.json({
+          result: [
+            { symbol: "AAPL", displaySymbol: "AAPL", description: "Apple Inc", type: "Common Stock" },
+            { symbol: "", description: "Invalid entry" },
+          ],
+        }),
+      ),
+    );
+
+    const provider = new FinnhubMarketDataProvider();
+    const valid = await provider.searchAssets(" apple ");
+    expect(valid).toEqual({
+      ok: true,
+      data: [{ symbol: "AAPL", displaySymbol: "AAPL", name: "Apple Inc", type: "Common Stock" }],
+    });
+
+    const empty = await provider.searchAssets("   ");
+    expect(empty.ok).toBe(false);
+  });
 });

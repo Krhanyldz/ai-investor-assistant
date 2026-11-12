@@ -23,6 +23,8 @@ export async function addPortfolioPosition(_previous: PortfolioActionState, form
     const { error } = await supabase.from("portfolio_positions").insert({ user_id: user.id, symbol: input.symbol, quantity: input.quantity, average_cost: input.averageCost, currency: input.currency });
     if (error) return { ok: false, message: error.code === "23505" ? "That symbol and currency already exist in your portfolio." : "The position could not be saved." };
     revalidatePath("/portfolio");
+    revalidatePath("/");
+    revalidatePath("/dashboard");
     return { ok: true, message: `${input.symbol} was added.` };
   } catch (error) {
     return { ok: false, message: error instanceof Error ? error.message : "Invalid position." };
@@ -36,6 +38,8 @@ export async function deletePortfolioPosition(_previous: PortfolioActionState, f
     const { error } = await supabase.from("portfolio_positions").delete().eq("id", id);
     if (error) return { ok: false, message: "The position could not be deleted." };
     revalidatePath("/portfolio");
+    revalidatePath("/");
+    revalidatePath("/dashboard");
     return { ok: true, message: "Position deleted." };
   } catch (error) {
     return { ok: false, message: error instanceof Error ? error.message : "Invalid position." };

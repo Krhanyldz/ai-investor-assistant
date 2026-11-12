@@ -35,15 +35,18 @@ describe("DashboardLayoutContent", () => {
   });
 
   it.each([
-    ["/", "Dashboard"],
-    ["/dashboard", "Dashboard"],
-    ["/stocks", "Stocks"],
-    ["/etfs", "ETFs"],
-    ["/watchlist", "Watchlist"],
-    ["/portfolio", "Portfolio"],
-    ["/ai-research", "AI Research"],
-    ["/settings", "Settings"],
-  ])("highlights the correct nav item for %s", (pathname, expectedLabel) => {
+    ["/", "/", "Dashboard"],
+    ["/dashboard", "/", "Dashboard"],
+    ["/stocks", "/stocks", "Stocks"],
+    ["/stocks/AAPL", "/stocks", "Stocks"],
+    ["/etfs", "/etfs", "ETFs"],
+    ["/etfs/VTI", "/etfs", "ETFs"],
+    ["/watchlist", "/watchlist", "Watchlist"],
+    ["/portfolio", "/portfolio", "Portfolio"],
+    ["/ai-research", "/ai-research", "AI Research"],
+    ["/ai-research/AAPL", "/ai-research", "AI Research"],
+    ["/settings", "/settings", "Settings"],
+  ])("highlights the correct nav item for %s", (pathname, expectedHref, expectedLabel) => {
     currentPathname = pathname;
 
     const { container } = render(
@@ -52,7 +55,7 @@ describe("DashboardLayoutContent", () => {
       </DashboardLayoutContent>,
     );
 
-    const link = container.querySelector(`a[href="${pathname === "/dashboard" ? "/" : pathname}"]`);
+    const link = container.querySelector(`a[href="${expectedHref}"]`);
     expect(link?.getAttribute("aria-current")).toBe("page");
     expect(link?.textContent).toContain(expectedLabel);
   });

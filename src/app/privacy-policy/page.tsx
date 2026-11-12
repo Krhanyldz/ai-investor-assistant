@@ -12,19 +12,21 @@ export default function PrivacyPolicyPage() {
       </p>
       <h2>Data currently processed</h2>
       <p>
-        The application uses Supabase authentication. Current account data may include email address, display name, profile
-        creation timestamp, profile update timestamp, Supabase auth cookies, and session data. The app records the consent
-        version and acceptance timestamp for authenticated users.
+        The application uses Supabase authentication and database storage. Current account data may include email address,
+        display name, profile creation timestamp, profile update timestamp, Supabase auth cookies, session data, manually
+        entered portfolio positions, and saved watchlist symbols. The app records the consent version and acceptance
+        timestamp for authenticated users.
       </p>
       <p>
         For signed-out visitors, consent may be stored locally in the browser as accepted status, consent version, and ISO
-        acceptance timestamp. User-entered portfolio, watchlist, or research data may be processed where those workflows are
-        added or connected. Finnhub market-data requests may be made when the market-data provider is configured.
+        acceptance timestamp. Finnhub market-data requests and OpenAI research requests may be made on the server when those
+        providers are configured.
       </p>
       <h2>AI and market data</h2>
       <p>
-        AI features are currently limited, unavailable, or introduced later. Where live market data is available, Finnhub is
-        the current configured source. Other areas may still show clearly labelled demo or sample data.
+        When AI research is requested and configured, asset symbols, optional user research questions, and supplied market
+        data context are sent from the server to OpenAI to generate structured research output. Where live market data is
+        available, Finnhub is the configured source; in local development, fallback mock data is clearly labelled.
       </p>
       <h2>Data minimization and user requests</h2>
       <p>

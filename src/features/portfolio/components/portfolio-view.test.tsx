@@ -16,6 +16,7 @@ describe("PortfolioView", () => {
     expect(screen.getByText("Cost basis (USD)")).toBeTruthy();
     expect(screen.getByText("Cost basis (EUR)")).toBeTruthy();
     expect(screen.getByText(/not live market value/i)).toBeTruthy();
+    expect(screen.getByRole("link", { name: "AAPL" }).getAttribute("href")).toBe("/stocks/AAPL");
     expect(screen.getByRole("button", { name: "Delete AAPL position" })).toBeTruthy();
   });
 
